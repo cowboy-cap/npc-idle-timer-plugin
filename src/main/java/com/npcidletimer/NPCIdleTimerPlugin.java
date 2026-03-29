@@ -26,6 +26,7 @@ import net.runelite.client.plugins.Plugin;
 import net.runelite.client.plugins.PluginDescriptor;
 import net.runelite.client.ui.overlay.OverlayManager;
 import net.runelite.client.util.Text;
+import net.runelite.client.callback.ClientThread;
 
 @Slf4j
 @PluginDescriptor(
@@ -35,6 +36,9 @@ public class NPCIdleTimerPlugin extends Plugin
 {
 	@Inject
 	private Client client;
+
+	@Inject
+	private ClientThread clientThread;
 
 	@Inject
 	private NPCIdleTimerConfig config;
@@ -67,7 +71,7 @@ public class NPCIdleTimerPlugin extends Plugin
 	{
 		overlayManager.add(npcidletimeroverlay);
 		selectedNPCs = getSelectedNPCs();
-		rebuildAllNpcs();
+		clientThread.invokeLater(this::rebuildAllNpcs);
 	}
 
 	@Override
@@ -192,7 +196,7 @@ public class NPCIdleTimerPlugin extends Plugin
 		}
 
 		selectedNPCs = getSelectedNPCs();
-		rebuildAllNpcs();
+		clientThread.invokeLater(this::rebuildAllNpcs);
 	}
 
 	@VisibleForTesting
